@@ -1,0 +1,27 @@
+from django.contrib import admin
+from models import Concept, DefaultLabel, AltLabel, Language, ConceptRelation, LanguageRelation
+
+class NarrowerAdmin(admin.TabularInline):
+    model = ConceptRelation
+    fk_name = 'broader_concept'
+    extra = 1
+    verbose_name = 'Narrower Concept'
+    
+class BroaderAdmin(admin.TabularInline):
+    model = ConceptRelation
+    fk_name = 'narrower_concept'
+    extra = 1
+    verbose_name = 'Broader Concept'
+    
+class LangRelAdmin(admin.TabularInline):
+    model = LanguageRelation
+    extra = 1
+    verbose_name = 'Language'
+    
+class ConceptAdmin(admin.ModelAdmin):
+    inlines = [LangRelAdmin, NarrowerAdmin, BroaderAdmin]
+
+admin.site.register(Concept, ConceptAdmin)
+admin.site.register(DefaultLabel)
+admin.site.register(AltLabel)
+admin.site.register(Language)
