@@ -46,6 +46,9 @@ class Vocabulary(models.Model):
         return self.name
     
 class Concept(models.Model):
+    class Meta:
+        ordering = ['uri']
+        
     # A vocabulary term
     definition = models.TextField()
     related_concepts = models.ManyToManyField('Concept', through=ConceptRelation)

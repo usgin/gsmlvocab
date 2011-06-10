@@ -20,6 +20,13 @@ class LangRelAdmin(admin.TabularInline):
     
 class ConceptAdmin(admin.ModelAdmin):
     list_display = ['__unicode__', 'definition', 'uri']
+    list_filter = ['vocabulary']
+    search_fields = ['uri', 
+                     'definition', 
+                     'languagerelation__default_label__label',
+                     'languagerelation__altlabel__label']
+    fields = ['uri', 'definition']
+    readonly_fields = ['uri', 'definition']
     #inlines = [LangRelAdmin, NarrowerAdmin, BroaderAdmin]
 
 admin.site.register(Concept, ConceptAdmin)
