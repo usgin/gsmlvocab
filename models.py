@@ -15,7 +15,7 @@ class ConceptRelation(models.Model):
 class LanguageRelation(models.Model):
     concept = models.ForeignKey('Concept')
     language = models.ForeignKey('Language')
-    default_label = models.ForeignKey('DefaultLabel')
+    default_label = models.ForeignKey('DefaultLabel', blank=True, null=True)
 
 class DefaultLabel(models.Model):
     # Default labels for concepts in a given language
@@ -34,16 +34,28 @@ class AltLabel(models.Model):
     def __unicode__(self):
         return self.alt_type + ': ' + self.label
 
+class Vocabulary(models.Model):
+    class Meta:
+        verbose_name_plural = 'Vocabularies'
+        
+    # A Vocabulary
+    name = models.CharField(max_length=255)
+    skos_url = models.URLField()
+    
+    def __unicode__(self):
+        return self.name
+    
 class Concept(models.Model):
     # A vocabulary term
     definition = models.TextField()
     related_concepts = models.ManyToManyField('Concept', through=ConceptRelation)
+    symmetric_concepts = models.ManyToManyField('Concept', related_name='Related Conc')
     languages = models.ManyToManyField('Language', through=LanguageRelation)
     uri = models.CharField(max_length=255)
+    vocabulary = models.ForeignKey('Vocabulary')
     
     def __unicode__(self):
-        #en = self.languages.filter(abbreviation='en')
-        #return en.default_label.label
-        return 'Turkey!!'
+        en = self.languagerelation_set.get(language__abbreviation = 'en')
+        return en.default_label.label
 
 

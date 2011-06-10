@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import Concept, DefaultLabel, AltLabel, Language, ConceptRelation, LanguageRelation
+from models import Concept, DefaultLabel, AltLabel, Language, ConceptRelation, LanguageRelation, Vocabulary
 
 class NarrowerAdmin(admin.TabularInline):
     model = ConceptRelation
@@ -19,9 +19,11 @@ class LangRelAdmin(admin.TabularInline):
     verbose_name = 'Language'
     
 class ConceptAdmin(admin.ModelAdmin):
-    inlines = [LangRelAdmin, NarrowerAdmin, BroaderAdmin]
+    list_display = ['__unicode__', 'definition', 'uri']
+    #inlines = [LangRelAdmin, NarrowerAdmin, BroaderAdmin]
 
 admin.site.register(Concept, ConceptAdmin)
-admin.site.register(DefaultLabel)
-admin.site.register(AltLabel)
-admin.site.register(Language)
+#admin.site.register(DefaultLabel)
+#admin.site.register(AltLabel)
+#admin.site.register(Language)
+admin.site.register(Vocabulary)
