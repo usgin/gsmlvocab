@@ -28,7 +28,7 @@ ALT_LABEL_CLASSES = [('alt', 'Alt'), ('see_also', 'See Also')]
 class AltLabel(models.Model):
     # Alt and see also labels for concepts in a specific language
     alt_type = models.CharField(max_length=10, choices=ALT_LABEL_CLASSES)
-    label = models.CharField(max_length=255)
+    label = models.TextField()
     language_relation = models.ForeignKey('LanguageRelation')
     
     def __unicode__(self):

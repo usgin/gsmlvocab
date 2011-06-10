@@ -18,6 +18,7 @@ ns = {'base': "&cgi;simplelithology",
       'xml': "http://www.w3.org/XML/1998/namespace",}
 
 # These dictionaries make it a little easier to refer to fully-qualified element and attribute names
+#  that get used frequently in the code below
 subeles = {'type': '{%s}type' % ns['rdf'],
           'source': '{%s}source' % ns['dc'],
           'prefLabel': '{%s}prefLabel' % ns['skos'],
@@ -69,24 +70,36 @@ def clear_vocabulary_data(vocabulary):
 
 def get_concept_uri(concept):
     try:
-        return concept.attrib[attribs['about']]
+        uri = concept.attrib[attribs['about']]
     except Exception, ex:
         # If there's no rdf:about attribute, then skip it.
         return None
+    
+    if uri == '': 
+        return None
+    else:
+        return uri
         
 def create_concepts(items, vocabulary):
     # Given the results of an XPath query for either skos:Concepts or owl:Things, 
     #  gather the URI and description of each, create a Concept
     
     # Assumes that the RDF file is valid, and that URIs are unique!
+    # Note that if a skos:Concept or owl:Thing has no rdf:about or
+    #  rdf:about == '' the concept will not be created.
     
     for item in items:
         uri = get_concept_uri(item)
         if uri is not None:
             definition = item.xpath('skos:definition', namespaces=ns)
-            if len(definition) > 0:
-                new_concept = Concept(uri=uri, definition=definition[0].text, vocabulary=vocabulary)
-                new_concept.save()
+            if len(definition) == 0: 
+                definition = None
+            else:
+                definition = definition[0].text
+                
+            if definition is None: definition = 'No definition was given.'                    
+            new_concept = Concept(uri=uri, definition=definition, vocabulary=vocabulary)
+            new_concept.save()
 
 def create_languages(doc):
     # Create a unique list of all Languages in the parsed document
