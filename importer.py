@@ -156,7 +156,11 @@ def import_from_url(url, vocabulary):
                 if len(this_concept.broader.filter(broader_concept__uri=concept)) == 0:
                     # Build the relationship
                     this_concept.broader.add(ConceptRelation.objects.create(broader_concept=Concept.objects.get(uri=concept), narrower_concept=this_concept))
-                
+            
+            # Build the Narrower Relationships
+            for concept in narrower:
+                if len(this_concept.narrower.filter(narrower_concept__uri=concept)) == 0:
+                    this_concept.narrower.add(ConceptRelation.objects.create(narrower_concept=Concept.objects.get(uri=concept), broader_concept=this_concept))      
                 
                 
                     
